@@ -1,6 +1,6 @@
 # ApplescriptsEx
 
-**TODO: Add description**
+OSX Applescript helpers.
 
 ## Installation
 
@@ -10,7 +10,7 @@ by adding `applescripts_ex` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:applescripts_ex, "~> 0.1.0"}
+    {:applescripts_ex, "~> 1.0.0"}
   ]
 end
 ```
@@ -18,4 +18,3 @@ end
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
 be found at [https://hexdocs.pm/applescripts_ex](https://hexdocs.pm/applescripts_ex).
-
