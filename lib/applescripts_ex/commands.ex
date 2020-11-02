@@ -16,19 +16,28 @@ defmodule ApplescriptsEx.Commands do
           | %{to: String.t(), text: String.t()}
           | %{to: String.t(), attachment: String.t()}
 
-  @type error() :: any()
+  @type error() :: {:invalid, any(), [:chat_id | :email | :file | :tel]}
   @type result() :: {:ok, stdout :: String.t()} | {:error, error()}
 
-  @default_dir Path.join(:code.priv_dir(:applescripts_ex), "applescripts/")
-  @dir Application.get_env(:applescripts_ex, :applescripts_dir, @default_dir)
+  # @default_dir Path.join(:code.priv_dir(:applescripts_ex), "applescripts/"
+  @default_dir Path.expand("priv/applescripts")
 
   @script_paths %{
-    send_text_group: Path.expand(@dir, "SendText.scpt"),
-    send_text_direct: Path.expand(@dir, "SendTextSingleBuddy.scpt"),
-    send_attachment_group: Path.expand(@dir, "SendImage.scpt"),
-    send_attachment_direct: Path.expand(@dir, "SendImageSingleBuddy.scpt")
+    send_text_group: "SendText.scpt",
+    send_text_direct: "SendTextSingleBuddy.scpt",
+    send_attachment_group: "SendImage.scpt",
+    send_attachment_direct: "SendImageSingleBuddy.scpt"
   }
+
   @script_keys Map.keys(@script_paths)
+
+  def script_paths do
+    dir = Application.get_env(:applescripts_ex, :applescripts_dir, @default_dir)
+
+    for {k, v} <- @script_paths, into: %{} do
+      {k, Path.expand(dir, v)}
+    end
+  end
 
   @doc """
   Converts a `chat_id` to a usable imessage representation.
@@ -123,7 +132,7 @@ defmodule ApplescriptsEx.Commands do
       raise RuntimeError, "OSx required to call `osascript`"
     end
 
-    script_path = Map.get(@script_paths, script_key)
+    script_path = Map.get(script_paths(), script_key)
 
     case System.cmd("osascript", [script_path | args]) do
       {stdout, 0} -> {:ok, stdout}
